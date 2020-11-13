@@ -7,18 +7,16 @@ import { AdminService } from '../../service/admin.service';
 import { ErrorModel, SuccessModel } from '../../model/ResModel';
 
 import { AdminLogin } from '../../interface/admin.interface';
-import { captchaError, LoginValidateError, LoginError } from '../../model/errorInfo';
+import { captchaError, LoginError } from '../../model/errorInfo';
 import { ADMIN } from '../../config/routerPrefix';
+import ValidatePipe from '../../pipe/validate.pipe';
+import { adminLoginValidate } from '../../validate/admin.validate';
+import { excludeAttributes } from '../../utils/index';
 
 @Controller(ADMIN)
 export class AdminController {
 
   constructor(private readonly adminService: AdminService) {}
-
-  @Get('')
-  index() {
-    return 'ADMIN';
-  }
 
   // 获取验证码
   @Get('captcha')
@@ -31,16 +29,16 @@ export class AdminController {
 
   // 管理员登录
   @Post('login')
-  async login(@Body() body: AdminLogin, @Req() req: Request, @Res() res: Response) {
+  async login(@Body(new ValidatePipe(adminLoginValidate)) body: AdminLogin, @Req() req: Request, @Res() res: Response) {
+    if (body instanceof ErrorModel) {
+      return res.send(body);
+    }
+
     // eslint-disable-next-line prefer-const
     let { username, password, captcha } = body;
 
     if (captcha?.toLocaleUpperCase() !== (req.session as any).captcha?.toLocaleUpperCase()) {
       return res.send(new ErrorModel(captchaError.status, captchaError.msg));
-    }
-
-    if (!username || !password) {
-      return res.send(new ErrorModel(LoginValidateError.status, LoginValidateError.msg));
     }
 
     password = md5(password);
@@ -50,7 +48,7 @@ export class AdminController {
       res.send(new ErrorModel(LoginError.status, LoginError.msg));
     } else {
       (req.session as any).userInfo = result;
-      res.send(new SuccessModel('ok'));
+      res.send(new SuccessModel(excludeAttributes(result, 'password')));
     }
   }
 

@@ -20,13 +20,19 @@ export class Admin {
   })
   mobile: number;
 
-  @Prop()
+  @Prop({
+    default: ''
+  })
   email: string;
 
-  @Prop()
+  @Prop({
+    default: true
+  })
   status: boolean;
 
-  @Prop()
+  @Prop({
+    default: null
+  })
   role_id: Types.ObjectId;
 
   @Prop({
