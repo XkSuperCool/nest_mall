@@ -1,9 +1,16 @@
-export function excludeAttributes<T, K extends keyof T> (param: T, ...args: K[]) {
+type MyPick<T, K extends keyof T> = {
+  [P in K]: T[P]
+}
+// 分布式有条件类型
+type MyExclude<T, P> = T extends P ? never : T
+type MyOmit<T, K extends keyof T> = MyPick<T, MyExclude<keyof T, K>>
+
+export function excludeAttributes<T, K extends keyof T> (param: T, ...args: K[]): MyOmit<T, K> {
   const tempObj = {};
   for (const [key, value] of Object.entries(JSON.parse(JSON.stringify(param)))) {
     if (!args.includes(key as K)) {
       tempObj[key] = value;
     }
   }
-  return tempObj;
+  return tempObj as MyOmit<T, K>;
 }

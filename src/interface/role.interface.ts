@@ -5,7 +5,7 @@ export interface IRole {
   create_time?: number;
 }
 
-export type UpdateRole = Pick<Partial<IRole>, 'create_time'>
+export type UpdateRole = Omit<Partial<IRole>, 'create_time'>
 export interface UpdateRoleBody {
   id: string,
   data: UpdateRole
