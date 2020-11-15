@@ -18,7 +18,7 @@ export class Admin {
   @Prop({
     required: true
   })
-  mobile: number;
+  mobile: string;
 
   @Prop({
     default: ''

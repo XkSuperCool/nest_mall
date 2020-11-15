@@ -1,3 +1,6 @@
+import { ErrorModel, SuccessModel } from '../model/ResModel';
+import { ResErrorObj } from '../model/errorInfo';
+
 type MyPick<T, K extends keyof T> = {
   [P in K]: T[P]
 }
@@ -13,4 +16,14 @@ export function excludeAttributes<T, K extends keyof T> (param: T, ...args: K[])
     }
   }
   return tempObj as MyOmit<T, K>;
+}
+
+
+// 查询函数错误捕获返回
+export function errorReturn(result: any, error: ResErrorObj) {
+  if (result?.ok) {
+    return new SuccessModel('ok');
+  } else {
+    return new ErrorModel(error.status, error.msg);
+  }
 }

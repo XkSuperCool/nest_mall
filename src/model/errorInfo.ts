@@ -1,4 +1,4 @@
-interface ResErrorObj {
+export interface ResErrorObj {
   status: number,
   msg: string
 }
@@ -15,3 +15,7 @@ export const createRoleError = genErrorObj(40004, '创建角色失败！');
 export const deleteRoleError = genErrorObj(40005, '删除角色失败！');
 export const updateRoleError = genErrorObj(40007, '更新角色信息失败！');
 export const getRoleInfoError = genErrorObj(40008, '获取角色信息失败！');
+export const createAdminError = genErrorObj(40009, '创建管理员失败！');
+export const roleObjectIdError = genErrorObj(40010, 'role_id 字段不匹配！');
+export const deleteAdminError = genErrorObj(40011, '删除管理员失败！');
+export const updateAdminError = genErrorObj(40012, '更新管理员失败！');

@@ -1,10 +1,10 @@
 class BaseModel {
-  status: number;
+  statusCode: number;
   data: any;
   message: string
 
   constructor(status: number, data?: any, message?: string) {
-    this.status = status;
+    this.statusCode = status;
     if (typeof data === 'string') {
       this.message = data;
     }
@@ -26,7 +26,7 @@ export class SuccessModel extends BaseModel {
 }
 
 export class ErrorModel extends BaseModel {
-  constructor(status: number, message: string) {
-    super(status, message);
+  constructor(statusCode: number, message: string) {
+    super(statusCode, message);
   }
 }
