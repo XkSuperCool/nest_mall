@@ -3,6 +3,8 @@ import { Document, Schema as MongooseSchema } from 'mongoose';
 
 export type AccessDocument = Access & Document;
 
+export type AccessType = '0' | '1' | '2';
+
 @Schema()
 export class Access {
   @Prop({
@@ -10,13 +12,15 @@ export class Access {
   })
   module_name: string
 
-  @Prop()
+  @Prop({
+    default: ''
+  })
   action_name: string;
 
   @Prop({
     required: true
   })
-  type: number; // 权限类型，0：模块 1：菜单 2: 操作
+  type: AccessType; // 权限类型，0：块模 1：菜单 2: 操作
 
   @Prop({
     required: true

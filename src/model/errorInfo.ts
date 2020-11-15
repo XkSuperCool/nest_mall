@@ -19,3 +19,4 @@ export const createAdminError = genErrorObj(40009, '创建管理员失败！');
 export const roleObjectIdError = genErrorObj(40010, 'role_id 字段不匹配！');
 export const deleteAdminError = genErrorObj(40011, '删除管理员失败！');
 export const updateAdminError = genErrorObj(40012, '更新管理员失败！');
+export const createAccessError = genErrorObj(40013, '创建权限失败');

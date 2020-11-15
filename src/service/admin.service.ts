@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Admin, AdminDocument } from '../schema/admin.schema';
-import { Role } from '../schema/role.schema';
 import { IAdmin } from '../interface/admin.interface';
 
 @Injectable()
