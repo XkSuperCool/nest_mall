@@ -1,5 +1,4 @@
 import * as joi from 'joi';
-import { string } from 'joi';
 
 export const adminLoginValidate = joi.object().keys({
   username: joi.string().min(5).max(10).required(),
@@ -18,7 +17,8 @@ export const adminValidate = joi.object().keys({
 })
 
 export const updateAdminValidate = joi.object().keys({
-  id: string().required(),
+    username: joi.string().min(5).max(10),
+    id: joi.string().required(),
   data: {
     username: joi.string().min(5).max(10),
     password: joi.string().min(6).max(15).regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,15}$/),
