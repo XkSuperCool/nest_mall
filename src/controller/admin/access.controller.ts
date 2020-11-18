@@ -29,8 +29,8 @@ export class AccessController {
         typeValidate = body.module_id === '0';
         break;
       case body.type === 1 || body.type === 2:
-        const result = await this.getAccessByType(body.type - 1 as AccessType);
-        typeValidate = result.some(item => item._id.toString() === body.module_id.toString());
+        const { data } = await this.getAccessByType(body.type - 1 as AccessType);
+        typeValidate = data.some(item => item._id.toString() === body.module_id.toString());
         break;
     }
 
@@ -56,6 +56,7 @@ export class AccessController {
 
   @Get(':type')
   async getAccessByType(@Param('type') type: AccessType) {
-    return await this.accessService.getAccessByType(type);
+    const result = await this.accessService.getAccessByType(type);
+    return new SuccessModel(result);
   }
 }

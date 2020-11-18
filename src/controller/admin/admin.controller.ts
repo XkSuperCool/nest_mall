@@ -109,6 +109,7 @@ export class AdminController {
   // 获取所有管理成员
   @Get()
   async getAdminList() {
-    return await this.adminService.getAdminAll();
+    const result = await this.adminService.getAdminAll();
+    return new SuccessModel(result);
   }
 }
