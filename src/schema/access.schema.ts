@@ -1,5 +1,5 @@
-import { Schema, SchemaFactory, Prop} from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
+import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 
 export type AccessDocument = Access & Document;
 
@@ -35,7 +35,7 @@ export class Access {
   @Prop({
     required: true
   })
-  module_id: string // '0'：顶级模块，objectId: 对应的父级模块 _id
+  module_id: MongooseSchema.Types.Mixed // '0'：顶级模块，objectId: 对应的父级模块 _id
 
   @Prop({
     default: 0

@@ -41,7 +41,7 @@ export class AccessController {
 
     if (body.module_id !== '0') {
       try {
-        body.module_id = Types.ObjectId(body.module_id as any);
+        body.module_id = Types.ObjectId(body.module_id);
       } catch {
         return new ErrorModel(moduleIdError.status, moduleIdError.msg);
       }
@@ -57,6 +57,12 @@ export class AccessController {
   @Get(':type')
   async getAccessByType(@Param('type') type: AccessType) {
     const result = await this.accessService.getAccessByType(type);
+    return new SuccessModel(result);
+  }
+
+  @Get()
+  async getAccessListTree() {
+    const result = await this.accessService.getAccessThree();
     return new SuccessModel(result);
   }
 }

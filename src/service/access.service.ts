@@ -16,7 +16,35 @@ export class AccessService {
     return await this.accessModel.find({ type: type }).exec();
   }
 
-  async getAccessAll() {
-    return await this.accessModel.find().exec();
+  async getAccessThree() {
+    const result = await this.accessModel.aggregate([
+      {
+        $match: {
+          type: 0
+        }
+      },
+      {
+        $lookup: {
+          from: 'access',
+          localField: '_id',
+          foreignField: 'module_id',
+          as: 'children'
+        },
+      },
+    ]);
+
+    for(const item of result) {
+      for (const child of item.children) {
+        child.children = await this.accessModel.aggregate([
+          {
+            $match: {
+              module_id: child._id
+            }
+          }
+        ])
+      }
+    }
+
+    return result;
   }
 }
