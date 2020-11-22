@@ -65,11 +65,13 @@ export class AdminController {
   // 创建管理员
   @Post('create')
   async createAdmin(@Body(new ValidatePipe(adminValidate)) body: IAdmin) {
+    // TODO: 未判断当前用户名是否已经存在
     try {
       body.role_id = Types.ObjectId(body.role_id as any);
     } catch {
       return new ErrorModel(roleObjectIdError.status, roleObjectIdError.msg);
     }
+    body.password = md5(body.password); // 加密
     const result = await this.adminService.addAdmin(body);
     if (result) {
       return new SuccessModel(result);

@@ -47,4 +47,11 @@ export class AccessService {
 
     return result;
   }
+
+  async getAccessByIds(ids: any[]) {
+    const res = await this.accessModel.find({
+      $or: ids
+    }, { url: 1 });
+    return res.map(item => item.url);
+  }
 }

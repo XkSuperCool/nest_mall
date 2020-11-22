@@ -11,6 +11,9 @@ import { AdminAuthMiddleware } from '../../middleware/adminAuth.middleware';
 import { Access, AccessSchema } from '../../schema/access.schema';
 import { AccessService } from '../../service/access.service';
 import { AccessController } from '../../controller/admin/access.controller';
+import { RoleAccess, RoleAccessSchema } from '../../schema/role_access.schema';
+import { RoleAccessController } from '../../controller/admin/role_access.controller';
+import { RoleAccessService } from '../../service/role_access.service';
 import { ADMIN } from '../../config/routerPrefix';
 
 @Module({
@@ -30,15 +33,22 @@ import { ADMIN } from '../../config/routerPrefix';
         name: Access.name,
         schema: AccessSchema,
         collection: Access.name.toLocaleLowerCase(),
+      },
+      {
+        name: RoleAccess.name,
+        schema: RoleAccessSchema,
+        collection: RoleAccess.name.toLocaleLowerCase(),
       }
     ])
   ],
   controllers: [
     AdminController,
     RoleController,
-    AccessController
+    AccessController,
+    RoleAccessController
   ],
-  providers:[AdminService, RoleService, AccessService]
+  providers:[AdminService, RoleService, AccessService, RoleAccessService],
+  exports: [RoleAccessService, AccessService]
 })
 export class AdminModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

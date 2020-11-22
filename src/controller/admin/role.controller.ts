@@ -21,7 +21,8 @@ export class RoleController {
   // 获取所有角色
   @Get()
   async getRoleAll() {
-    return await this.roleService.findRoleAll();
+    const result = await this.roleService.findRoleAll();
+    return new SuccessModel(result);
   }
 
   // 创建角色
