@@ -48,12 +48,14 @@ export class RoleAccessController {
   async getRoleAccessUrls(@Query('roleId') roleId: string) {
     const access_ids = await this.service.getRoleAccess(roleId);
     let urls = [];
-    try {
-      urls = await this.acService.getAccessByIds(access_ids.map(id => ({
-        _id: Types.ObjectId(id)
-      })));
-    } catch {
-      return new ErrorModel(accessIdError.status, accessIdError.msg);
+    if (access_ids.length) {
+      try {
+        urls = await this.acService.getAccessByIds(access_ids.map(id => ({
+          _id: Types.ObjectId(id)
+        })));
+      } catch {
+        return new ErrorModel(accessIdError.status, accessIdError.msg);
+      }
     }
     return new SuccessModel(urls);
   }

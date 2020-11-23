@@ -78,6 +78,6 @@ export class AccessController {
   @Get('all')
   async getAccessListTree() {
     const result = await this.accessService.getAccessTree();
-    return new SuccessModel(result);	
+    return new SuccessModel(result);
   }
 }
