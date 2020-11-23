@@ -1,5 +1,6 @@
 import { AccessType } from '../schema/access.schema';
 export interface IAccess {
+  _id?: string
   module_name: string
   action_name?: string
   type: AccessType
@@ -9,4 +10,8 @@ export interface IAccess {
   sort?: number
   description?: string
   create_time?: number
+}
+
+export interface AccessTree extends IAccess {
+  children: AccessTree[]
 }

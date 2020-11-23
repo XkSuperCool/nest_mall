@@ -74,9 +74,4 @@ export class AccessController {
     const result = await this.accessService.getAccessByType(type);
     return new SuccessModel(result);
   }
-
-  @Get()
-  async getAccessListTree() {
-    // 
-  }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema } from 'mongoose';
 import { Access, AccessDocument, AccessType } from '../schema/access.schema';
-import { IAccess } from '../interface/access.interface';
+import { IAccess, AccessTree } from '../interface/access.interface';
 
 @Injectable()
 export class AccessService {
@@ -19,7 +19,7 @@ export class AccessService {
   }
 
   // 获取权限树
-  async getAccessTree() {
+  async getAccessTree(twoStage = false): Promise<AccessTree[]> {
     const result = await this.accessModel.aggregate([
       {
         $match: {
@@ -34,7 +34,16 @@ export class AccessService {
           as: 'children'
         },
       },
+      {
+        $sort: {
+          sort: -1 // 降序
+        }
+      }
     ]);
+
+    if (twoStage) {
+      return result;
+    }
 
     // 获取三级
     for(const item of result) {
@@ -43,6 +52,11 @@ export class AccessService {
           {
             $match: {
               module_id: child._id
+            }
+          },
+          {
+            $sort: {
+              sort: -1 // 降序
             }
           }
         ])
@@ -63,25 +77,5 @@ export class AccessService {
   // 根据 id 获取权限
   async getAccessById(id: Schema.Types.ObjectId) {
     return await this.accessModel.findOne({ _id: id }, { module_id: 1 });
-  }
-
-  // 根据角色获取权限树
-  async getAccessTreeByRole() {
-    return await this.accessModel.aggregate([
-      {
-        $match: {
-          type: 0,
-          
-        }
-      },
-      {
-        $lookup: {
-          from: 'access',
-          localField: '_id',
-          foreignField: 'module_id',
-          as: 'children'
-        },
-      },
-    ]);
   }
 }

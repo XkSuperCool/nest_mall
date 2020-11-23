@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 import { RoleAccessService } from '../../service/role_access.service';
 import { AccessService } from '../../service/access.service';
 import { AddRoleAccess } from '../../interface/role_access.interface';
+import { AccessTree } from '../../interface/access.interface';
 import { SuccessModel, ErrorModel } from '../../model/ResModel';
 import { updateRoleAccess, accessIdError } from '../../model/errorInfo';
 import { ADMIN } from '../../config/routerPrefix';
@@ -60,8 +61,14 @@ export class RoleAccessController {
   // 获取权限过滤侧边栏菜单
   @Get('menu')
   async getRoleAccessMenu(@Query('roleId') roleId: string) {
-    const accessTree = await this.acService.getAccessTree(true);
-    return new SuccessModel(accessTree);
+    // TODO: 未完成
+    // 1. 查询获取权限数组、角色对应的权限 ids
+    const [access, ids] = await Promise.all([
+      this.acService.getAccessTree(true),
+      this.service.getRoleAccess(roleId)
+    ]);
+    // 2. 递归
+    return new SuccessModel('error');
   }
 }
 
