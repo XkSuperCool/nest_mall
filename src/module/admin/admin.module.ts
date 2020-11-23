@@ -54,7 +54,13 @@ export class AdminModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AdminAuthMiddleware)
-      .exclude(`${ADMIN}/login`, `${ADMIN}/captcha`, `${ADMIN}/logout`)
+      .exclude(
+        `${ADMIN}/login`,
+        `${ADMIN}/captcha`,
+        `${ADMIN}/logout`,
+        `${ADMIN}/role/access/urls`,
+        `${ADMIN}/role/access/menu`
+      )
       .forRoutes(`${ADMIN}*`)
   }
 }

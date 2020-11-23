@@ -4,6 +4,7 @@ import { Types } from 'mongoose';
 import ValidatePipe from '../../pipe/validate.pipe';
 import { AccessType } from '../../schema/access.schema';
 import { AccessService } from '../../service/access.service';
+import { RoleAccessService } from '../../service/role_access.service';
 import { ADMIN } from '../../config/routerPrefix';
 import { IAccess } from '../../interface/access.interface';
 import { accessValidate } from '../../validate/access.validate';
@@ -12,7 +13,7 @@ import { createAccessError, moduleIdError, createAccessTypeError } from '../../m
 
 @Controller(ADMIN + '/access')
 export class AccessController {
-  constructor(private readonly accessService: AccessService) {}
+  constructor(private readonly accessService: AccessService, private readonly raService: RoleAccessService) {}
 
   @Post('create')
   async createAccess(@Body(new ValidatePipe(accessValidate)) body: IAccess) {
@@ -46,6 +47,20 @@ export class AccessController {
         return new ErrorModel(moduleIdError.status, moduleIdError.msg);
       }
     }
+    /**
+     * 如果添加的是菜单/操作，则需要根据 module_id 去 roleAccess 表中，将 access_id ==  module_id 的项删除，
+     * 因为新增加的项，必然没有角色关联，则此时其父项不应该存在
+     */
+    if (body.type === 1 || body.type === 2) {
+      await this.raService.deleteByAccessId(body.module_id.toString());
+
+      // 如果是操作，还需要进一步删除
+      if (body.type === 2) {
+        // 获取菜单父项 id，并删除
+        const parentId = (await this.accessService.getAccessById(body.module_id)).module_id;
+        await this.raService.deleteByAccessId(parentId.toString());
+      }
+    }
     const result = await this.accessService.addAccess(body);
     if (result) {
       return new SuccessModel(result);
@@ -62,7 +77,6 @@ export class AccessController {
 
   @Get()
   async getAccessListTree() {
-    const result = await this.accessService.getAccessThree();
-    return new SuccessModel(result);
+    // 
   }
 }

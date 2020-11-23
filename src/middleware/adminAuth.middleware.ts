@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { Types } from 'mongoose';
+import { Types, isValidObjectId } from 'mongoose';
 
 import { ErrorModel } from '../model/ResModel';
 import { notLoginError, authError, unknownError } from '../model/errorInfo';
@@ -24,11 +24,23 @@ export class AdminAuthMiddleware implements NestMiddleware {
         const accessQuery = (await this.raService.getRoleAccess(role_id)).map(id => ({
           _id: Types.ObjectId(id)
         }));
+        if (accessQuery.length === 0) {
+          return res.send(new ErrorModel(authError.status, authError.msg));
+        }
         // 获取对应的权限 urls
         const urls = await this.acService.getAccessByIds(accessQuery);
         let originalUrl = req.originalUrl;
         // 判断是不是动态路由，url 后面跟有 /[0-9] 的就是动态路由
-        const query = originalUrl.match(/[0-9]$/);
+        let query = originalUrl.match(/[0-9]$/);
+
+        // 判断是否是 ObjectId，处理 ObjectId 的动态路由
+        if (!query) {
+          const index = originalUrl.lastIndexOf('/');
+          const objectId = originalUrl.slice(index + 1);
+          if (isValidObjectId(objectId)) {
+            query = [objectId];
+          }
+        }
         if (query) {
           // 去掉动态路由的参数
           originalUrl = originalUrl.replace('/' + query[0], '');
