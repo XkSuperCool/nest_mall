@@ -102,14 +102,14 @@ export class AdminController {
   }
 
   // 获取一个管理成员
-  @Get('member')
+  @Get()
   async getAdminInfoById(@Query('id') id: string) {
     const result = await this.adminService.getAdminOne(id);
     return new SuccessModel(result[0] ?? {});
   }
 
   // 获取所有管理成员
-  @Get()
+  @Get('all')
   async getAdminList() {
     const result = await this.adminService.getAdminAll();
     return new SuccessModel(result);

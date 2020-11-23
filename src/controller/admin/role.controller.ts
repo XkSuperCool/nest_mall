@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Query, Post, Put } from '@nestjs/common';
 
 import ValidatePipe from '../../pipe/validate.pipe';
 import { errorReturn } from '../../utils';
@@ -19,7 +19,7 @@ export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   // 获取所有角色
-  @Get()
+  @Get('all')
   async getRoleAll() {
     const result = await this.roleService.findRoleAll();
     return new SuccessModel(result);
@@ -52,8 +52,8 @@ export class RoleController {
   }
 
   // 获取指定 id 的角色
-  @Get(':id')
-  async getRoleById(@Param('id') id: string) {
+  @Get()
+  async getRoleById(@Query('id') id: string) {
     const result =  await this.roleService.findOneRole(id);
     if (result) {
       return new SuccessModel(result);

@@ -15,8 +15,8 @@ export class RoleAccessController {
   // antd tree component 格式 api
 
   // 获取角色对应的权限
-  @Get(':id')
-  async getRoleAccessByRoleId(@Param('id') id: string) {
+  @Get()
+  async getRoleAccessByRoleId(@Query('id') id: string) {
     const [access, ids] = await Promise.all([
       this.acService.getAccessTree(),
       this.service.getRoleAccess(id)
@@ -67,8 +67,40 @@ export class RoleAccessController {
       this.acService.getAccessTree(true),
       this.service.getRoleAccess(roleId)
     ]);
-    // 2. 递归
-    return new SuccessModel('error');
+
+    // 2. 递归生成
+    function generateMenu(arr: AccessTree[]) {
+      const menus = [];
+      for (const item of arr) {
+        let tree: any = {};
+        if (ids.includes(item._id.toString())) {
+          tree = {
+            title: item.module_name,
+            key: item._id,
+            url: item.url
+          }
+        }
+
+        if (item.children && item.children.length) {
+          const children = generateMenu(item.children);
+          if (children.length) {
+            tree.children = children;
+          }
+        }
+        
+        if (tree.children?.length) {
+          tree.title = item.module_name;
+          tree.key = item._id;
+          tree.url = item.url;
+        }
+
+        Object.keys(tree).length && menus.push(tree);
+      }
+      return menus;
+    }
+    
+    const menus = generateMenu(access);
+    return new SuccessModel(menus);
   }
 }
 

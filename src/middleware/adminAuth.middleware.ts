@@ -1,6 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { Types, isValidObjectId } from 'mongoose';
+import { Types } from 'mongoose';
+import * as url from 'url'
 
 import { ErrorModel } from '../model/ResModel';
 import { notLoginError, authError, unknownError } from '../model/errorInfo';
@@ -30,20 +31,10 @@ export class AdminAuthMiddleware implements NestMiddleware {
         // 获取对应的权限 urls
         const urls = await this.acService.getAccessByIds(accessQuery);
         let originalUrl = req.originalUrl;
-        // 判断是不是动态路由，url 后面跟有 /[0-9] 的就是动态路由
-        let query = originalUrl.match(/[0-9]$/);
-
-        // 判断是否是 ObjectId，处理 ObjectId 的动态路由
-        if (!query) {
-          const index = originalUrl.lastIndexOf('/');
-          const objectId = originalUrl.slice(index + 1);
-          if (isValidObjectId(objectId)) {
-            query = [objectId];
-          }
-        }
-        if (query) {
-          // 去掉动态路由的参数
-          originalUrl = originalUrl.replace('/' + query[0], '');
+        // 去掉查询参数
+        const search = url.parse(originalUrl).search;
+        if (search !== null) {
+          originalUrl = originalUrl.replace(search, '');
         }
         if (!urls.includes(originalUrl)) {
           return res.send(new ErrorModel(authError.status, authError.msg));

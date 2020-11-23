@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Query, Post } from '@nestjs/common';
 import { Types } from 'mongoose';
 
 import ValidatePipe from '../../pipe/validate.pipe';
@@ -69,9 +69,15 @@ export class AccessController {
     }
   }
 
-  @Get(':type')
-  async getAccessByType(@Param('type') type: AccessType) {
+  @Get()
+  async getAccessByType(@Query('type') type: AccessType) {
     const result = await this.accessService.getAccessByType(type);
     return new SuccessModel(result);
+  }
+
+  @Get('all')
+  async getAccessListTree() {
+    const result = await this.accessService.getAccessTree();
+    return new SuccessModel(result);	
   }
 }
