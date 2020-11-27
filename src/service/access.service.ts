@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Schema } from 'mongoose';
+import { Model, Schema , Types} from 'mongoose';
 import { Access, AccessDocument, AccessType } from '../schema/access.schema';
 import { IAccess, AccessTree } from '../interface/access.interface';
 
@@ -77,5 +77,9 @@ export class AccessService {
   // 根据 id 获取权限
   async getAccessById(id: Schema.Types.ObjectId) {
     return await this.accessModel.findOne({ _id: id }, { module_id: 1 });
+  }
+
+  async deleteAccessById(id: Types.ObjectId) {
+    return await this.accessModel.deleteOne({ _id: id });
   }
 }

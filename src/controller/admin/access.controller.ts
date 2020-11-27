@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Query, Post } from '@nestjs/common';
-import { Types } from 'mongoose';
+import { Body, Controller, Get, Query, Post, Delete } from '@nestjs/common';
+import { Types, Schema } from 'mongoose';
 
 import ValidatePipe from '../../pipe/validate.pipe';
 import { AccessType } from '../../schema/access.schema';
@@ -9,7 +9,7 @@ import { ADMIN } from '../../config/routerPrefix';
 import { IAccess } from '../../interface/access.interface';
 import { accessValidate } from '../../validate/access.validate';
 import { ErrorModel, SuccessModel } from '../../model/ResModel';
-import { createAccessError, moduleIdError, createAccessTypeError } from '../../model/errorInfo';
+import { createAccessError, moduleIdError, createAccessTypeError, accessIdError, deleteAccessError } from '../../model/errorInfo';
 
 @Controller(ADMIN + '/access')
 export class AccessController {
@@ -66,6 +66,30 @@ export class AccessController {
       return new SuccessModel(result);
     } else {
       return new ErrorModel(createAccessError.status, createAccessError.msg);
+    }
+  }
+
+  @Delete('delete')
+  async deleteAccessById(@Body() body: IAccess) {
+    if (body.type === 1 || body.type === 2) {
+      await this.raService.deleteByAccessId(body.module_id.toString());
+      // 如果是操作，还需要进一步删除
+      if (body.type === 2) {
+        // 获取菜单父项 id，并删除
+        const parentId = (await this.accessService.getAccessById(body.module_id)).module_id;
+        await this.raService.deleteByAccessId(parentId.toString());
+      }
+    }
+    try {
+      (body._id as any) = Types.ObjectId(body._id)
+    } catch {
+      return new ErrorModel(accessIdError.status, accessIdError.msg);
+    }
+    const result = await this.accessService.deleteAccessById(body._id as any as Types.ObjectId);
+    if (result.ok) {
+      return new SuccessModel('ok');
+    } else {
+      return new ErrorModel(deleteAccessError.status, deleteAccessError.msg);
     }
   }
 

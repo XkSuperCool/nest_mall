@@ -15,3 +15,8 @@ export interface IAccess {
 export interface AccessTree extends IAccess {
   children: AccessTree[]
 }
+
+export interface UpdateAccess {
+  id: string
+  data: Omit<IAccess, '_id'>
+}

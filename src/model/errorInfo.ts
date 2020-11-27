@@ -25,3 +25,4 @@ export const createAccessTypeError = genErrorObj(40015, 'module_id 字段和 typ
 export const updateRoleAccess = genErrorObj(40016, '修改角色权限失败！');
 export const unknownError = genErrorObj(50000, '出现未知错误，请稍后重试！');
 export const accessIdError = genErrorObj(40010, 'access_id 字段不匹配！');
+export const deleteAccessError = genErrorObj(40011, '删除权限失败！');
