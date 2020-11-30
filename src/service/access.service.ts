@@ -14,8 +14,8 @@ export class AccessService {
   }
 
   // 根据 type 获取权限
-  async getAccessByType(type: AccessType) {
-    return await this.accessModel.find({ type: type }).exec();
+  getAccessByType(type: AccessType) {
+    return this.accessModel.find({ type: type }).exec();
   }
 
   // 获取权限树
@@ -79,7 +79,7 @@ export class AccessService {
     return await this.accessModel.findOne({ _id: id }, { module_id: 1 });
   }
 
-  async deleteAccessById(id: Types.ObjectId) {
-    return await this.accessModel.deleteOne({ _id: id });
+  deleteAccessById(id: Types.ObjectId) {
+    return this.accessModel.deleteOne({ _id: id });
   }
 }

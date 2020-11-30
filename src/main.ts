@@ -10,6 +10,9 @@ import { cookieSecret, sessionSecret } from './config/secretkey';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // 处理跨域
+  app.enableCors();
+
   // 静态目录
   app.useStaticAssets(path.join(__dirname, '..', 'assets'));
 

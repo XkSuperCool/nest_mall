@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ToolsController } from '../../controller/api/tools.controller';
 
-@Module({})
+@Module({
+  controllers: [ToolsController]
+})
 export class ApiModule {}

@@ -14,6 +14,8 @@ import { AccessController } from '../../controller/admin/access.controller';
 import { RoleAccess, RoleAccessSchema } from '../../schema/role_access.schema';
 import { RoleAccessController } from '../../controller/admin/role_access.controller';
 import { RoleAccessService } from '../../service/role_access.service';
+import { Carousel, CarouselSchema } from '../../schema/carousel.schema';
+import { CarouselService } from '../../service/carousel.service';
 import { ADMIN } from '../../config/routerPrefix';
 
 @Module({
@@ -38,6 +40,11 @@ import { ADMIN } from '../../config/routerPrefix';
         name: RoleAccess.name,
         schema: RoleAccessSchema,
         collection: RoleAccess.name.toLocaleLowerCase(),
+      },
+      {
+        name: Carousel.name,
+        schema: CarouselSchema,
+        collection: Carousel.name.toLocaleLowerCase(),
       }
     ])
   ],
@@ -47,7 +54,7 @@ import { ADMIN } from '../../config/routerPrefix';
     AccessController,
     RoleAccessController
   ],
-  providers:[AdminService, RoleService, AccessService, RoleAccessService],
+  providers:[AdminService, RoleService, AccessService, RoleAccessService, CarouselService],
   exports: [RoleAccessService, AccessService]
 })
 export class AdminModule implements NestModule {
